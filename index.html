@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Graduan Special MKP 2026</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      font-family: 'Inter', sans-serif;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    .card {
+      background: rgba(255,255,255,0.97);
+      border-radius: 2rem;
+      box-shadow: 0 25px 45px -12px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+    .header {
+      background: #0f2b3d;
+      padding: 2rem;
+      text-align: center;
+      color: white;
+    }
+    .header h1 { font-size: 1.9rem; margin-bottom: 0.5rem; }
+    .badge {
+      background: #ffb74d;
+      color: #2c3e2f;
+      display: inline-block;
+      padding: 0.25rem 1rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+    .form-content { padding: 2rem; }
+    .form-group { margin-bottom: 1.6rem; }
+    label { font-weight: 600; color: #1e2f3e; margin-bottom: 0.5rem; display: block; }
+    .required:after { content: " *"; color: #e53e3e; }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.85rem 1.2rem;
+      font-size: 1rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 1.2rem;
+      transition: all 0.2s;
+      outline: none;
+    }
+    .error-input {
+      border: 1.5px solid #e53e3e !important;
+      background-color: #fff5f5 !important;
+    }
+    .twin-section {
+      background: #f8fafc;
+      border-radius: 1.5rem;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid #2b6a9f;
+    }
+    .twin-title { font-weight: 700; margin-bottom: 1rem; color: #0f2b3d; }
+    .btn-submit {
+      background: #0f2b3d;
+      color: white;
+      border: none;
+      padding: 1rem;
+      font-weight: 600;
+      border-radius: 3rem;
+      width: 100%;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+    }
+    .btn-submit:hover { background: #1e4a6e; transform: scale(0.98); }
+    .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
+    .alert {
+      border-radius: 1.2rem;
+      padding: 1rem;
+      margin-bottom: 1.8rem;
+      display: none;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .alert-success { background: #e6f9ed; color: #1e6f3f; border-left: 5px solid #2ecc71; }
+    .alert-error { background: #ffeaea; color: #c0392b; border-left: 5px solid #e74c3c; }
+    .footer-note {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.75rem;
+      background: rgba(255,255,255,0.6);
+      padding: 1rem;
+      border-radius: 2rem;
+    }
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      backdrop-filter: blur(3px);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: white;
+      max-width: 550px;
+      width: 90%;
+      border-radius: 1.5rem;
+      overflow: hidden;
+    }
+    .modal-header { background: #0f2b3d; color: white; padding: 1.2rem; font-weight: 600; }
+    .modal-body { padding: 1.5rem; max-height: 60vh; overflow-y: auto; }
+    .info-item { background: #f1f5f9; padding: 0.7rem 1rem; border-radius: 1rem; margin-bottom: 0.7rem; }
+    .modal-footer { padding: 1rem 1.5rem 1.5rem; display: flex; gap: 1rem; justify-content: flex-end; }
+    .btn-cancel { background: #e2e8f0; color: #1e2f3e; padding: 0.6rem 1.5rem; border-radius: 2rem; border: none; cursor: pointer; }
+    .btn-confirm { background: #0f2b3d; color: white; padding: 0.6rem 1.5rem; border-radius: 2rem; border: none; cursor: pointer; }
+    @media (max-width:650px){ .form-content { padding:1.5rem; } }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <div class="header">
+      <h1>🎓 Graduan Special</h1>
+      <p>Promosi MKP 2026 • Kisah inspiratif & keunikan graduan</p>
+      <div class="badge">🏆 Sesi temu bual media sosial & arus perdana</div>
+    </div>
+    <div class="form-content">
+      <div id="alertBox" class="alert"></div>
+      <form id="graduateForm">
+        <div class="form-group">
+          <label class="required">KATEGORI</label>
+          <select id="kategori" required>
+            <option value="" disabled selected>– Pilih kategori –</option>
+            <option value="Graduan Kembar">Graduan Kembar</option>
+            <option value="OKU (Orang Kelainan Upaya)">OKU</option>
+            <option value="Kisah Inspiratif / Luar Biasa">Kisah Inspiratif</option>
+            <option value="Graduan dengan Keunikan Tersendiri">Keunikan Tersendiri</option>
+            <option value="Lain-lain">Lain-lain</option>
+          </select>
+        </div>
+        <div id="dynamicFields"></div>
+        <div class="form-group">
+          <label class="required">JIKA BERKEPERLUAN KHAS (kerusi roda, tongkat, pendamping, dll)</label>
+          <textarea id="keperluan" placeholder="Sila nyatakan keperluan khas (wajib diisi)"></textarea>
+          <div class="hint">⚠️ Wajib diisi. Taip "tiada" jika tiada keperluan.</div>
+        </div>
+        <button type="submit" class="btn-submit" id="submitBtn"><span>💾</span> <span>SAVE</span></button>
+      </form>
+      <div class="footer-note">★ Maklumat hanya untuk promosi MKP 2026.</div>
+    </div>
+  </div>
+</div>
+
+<div id="confirmModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">✅ Semak Semula</div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="modalCancel">✏️ Batal & Edit</button>
+      <button class="btn-confirm" id="modalConfirm">👍 Sahkan & Hantar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwSSlRQ8nw3z6cbK0csgzKKWgNrm0TekVuh41sWZ3pCL3H5qmJBsxJsav7wr-oZvr_I/exec";
+  
+  // Helper
+  function showAlert(msg, type) {
+    const box = document.getElementById('alertBox');
+    box.style.display = 'flex';
+    box.className = `alert alert-${type}`;
+    box.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span> <span>${msg}</span>`;
+    setTimeout(() => box.style.display = 'none', 5000);
+  }
+
+  // Minimal dynamic form (sama seperti sebelumnya, tapi kita ringkaskan)
+  const kategori = document.getElementById('kategori');
+  const dynDiv = document.getElementById('dynamicFields');
+  const keperluan = document.getElementById('keperluan');
+  let currentMode = 'single';
+
+  function buildSingle() {
+    dynDiv.innerHTML = `
+      <div class="form-group"><label class="required">NAMA GRADUAN</label><input type="text" id="nama" placeholder="NUR AISYAH BINTI ABDULLAH" style="text-transform:uppercase"></div>
+      <div class="form-group"><label class="required">CONTACT NUMBER</label><input type="tel" id="contact" placeholder="012-3456789"></div>
+    `;
+    attachSingleEvents();
+    currentMode = 'single';
+  }
+  function attachSingleEvents() {
+    const n = document.getElementById('nama');
+    const c = document.getElementById('contact');
+    if(n) n.addEventListener('input', function() { this.value = this.value.toUpperCase(); this.classList.remove('error-input'); });
+    if(c) c.addEventListener('input', function() { this.classList.remove('error-input'); });
+  }
+  function buildTwins() {
+    dynDiv.innerHTML = `<div class="form-group"><label class="required">BILANGAN KEMBAR</label><select id="twinCount"><option value="">-- Pilih --</option>${[2,3,4,5].map(i=>`<option value="${i}">${i} Kembar</option>`).join('')}</select></div><div id="twinContainer"></div>`;
+    const tc = document.getElementById('twinCount');
+    tc.addEventListener('change', function() {
+      const val = parseInt(this.value);
+      if(val>=2 && val<=5) generateTwins(val);
+      else document.getElementById('twinContainer').innerHTML = '';
+    });
+    currentMode = 'twins';
+  }
+  function generateTwins(count) {
+    const cont = document.getElementById('twinContainer');
+    cont.innerHTML = '';
+    for(let i=1;i<=count;i++) {
+      const div = document.createElement('div');
+      div.className = 'twin-section';
+      div.innerHTML = `<div class="twin-title">👥 KEMBAR ${i}</div>
+        <div class="form-group"><label>Nama ${i}</label><input type="text" class="twin-name" data-idx="${i}" style="text-transform:uppercase"></div>
+        <div class="form-group"><label>Telefon ${i}</label><input type="tel" class="twin-contact" data-idx="${i}" placeholder="012-3456789"></div>`;
+      cont.appendChild(div);
+    }
+    document.querySelectorAll('.twin-name').forEach(inp => inp.addEventListener('input', function() { this.value = this.value.toUpperCase(); this.classList.remove('error-input'); }));
+    document.querySelectorAll('.twin-contact').forEach(inp => inp.addEventListener('input', function() { this.classList.remove('error-input'); }));
+  }
+  
+  // Validation
+  function validateSingle() {
+    let ok = true;
+    const nama = document.getElementById('nama');
+    const contact = document.getElementById('contact');
+    if(!nama.value.trim()) { nama.classList.add('error-input'); ok=false; } else nama.classList.remove('error-input');
+    const phonePattern = /^\d{3}-\d{7,8}$/;
+    if(!contact.value.trim() || !phonePattern.test(contact.value.trim())) { contact.classList.add('error-input'); ok=false; } else contact.classList.remove('error-input');
+    return ok;
+  }
+  function validateTwins() {
+    const sel = document.getElementById('twinCount');
+    const cnt = parseInt(sel?.value);
+    if(isNaN(cnt) || cnt<2) { showAlert('Pilih bilangan kembar (2-5)','error'); return false; }
+    let ok = true;
+    const names = document.querySelectorAll('.twin-name');
+    const contacts = document.querySelectorAll('.twin-contact');
+    const phonePattern = /^\d{3}-\d{7,8}$/;
+    names.forEach(n => { if(!n.value.trim()) { n.classList.add('error-input'); ok=false; } else n.classList.remove('error-input'); });
+    contacts.forEach(c => { if(!c.value.trim() || !phonePattern.test(c.value.trim())) { c.classList.add('error-input'); ok=false; } else c.classList.remove('error-input'); });
+    if(!ok) showAlert('Lengkapkan semua nama & telefon (format 012-3456789)','error');
+    return ok;
+  }
+  function validateKeperluan() {
+    if(keperluan.value.trim() === "") { keperluan.classList.add('error-input'); return false; }
+    keperluan.classList.remove('error-input');
+    return true;
+  }
+  
+  // Preview
+  function getSinglePreview() {
+    return { name: document.getElementById('nama').value.trim(), phone: document.getElementById('contact').value.trim(), kategori: kategori.value, keperluan: keperluan.value.trim() };
+  }
+  function getTwinsPreview() {
+    const cnt = parseInt(document.getElementById('twinCount').value);
+    const twins = [];
+    for(let i=1;i<=cnt;i++) {
+      const n = document.querySelector(`.twin-name[data-idx="${i}"]`).value.trim();
+      const p = document.querySelector(`.twin-contact[data-idx="${i}"]`).value.trim();
+      twins.push({nama:n,contact:p});
+    }
+    return { twins, kategori: kategori.value, keperluan: keperluan.value.trim() };
+  }
+  function showModal() {
+    let html = '';
+    if(currentMode === 'single') {
+      const d = getSinglePreview();
+      html = `<p><strong>Kategori:</strong> ${d.kategori}</p><div class="info-item">Nama: ${d.name}</div><div class="info-item">Telefon: ${d.phone}</div><div class="info-item">Keperluan: ${d.keperluan}</div>`;
+    } else {
+      const d = getTwinsPreview();
+      html = `<p><strong>Kategori:</strong> ${d.kategori}</p><p><strong>Bilangan kembar:</strong> ${d.twins.length}</p>`;
+      d.twins.forEach((t,i) => { html += `<div class="info-item"><strong>Kembar ${i+1}</strong><br>Nama: ${t.nama}<br>Telefon: ${t.contact}</div>`; });
+      html += `<div class="info-item">Keperluan: ${d.keperluan}</div>`;
+    }
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('confirmModal').style.display = 'flex';
+  }
+  
+  async function submitConfirmed() {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+    
+    let payload;
+    if(currentMode === 'single') {
+      const d = getSinglePreview();
+      payload = { nama: d.name, kategori: d.kategori, contact: d.phone, keperluan: d.keperluan };
+    } else {
+      const d = getTwinsPreview();
+      payload = d.twins.map(t => ({ nama: t.nama, contact: t.contact, kategori: d.kategori, keperluan: d.keperluan }));
+    }
+    
+    try {
+      const response = await fetch(WEB_APP_URL, {
+        method: 'POST',
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json();
+      if(result.status === 'success') {
+        showAlert('Semua maklumat telah berjaya disimpan. Terima kasih.', 'success');
+        document.getElementById('graduateForm').reset();
+        kategori.selectedIndex = 0;
+        keperluan.value = '';
+        buildSingle();
+        document.querySelectorAll('.error-input').forEach(el => el.classList.remove('error-input'));
+      } else {
+        showAlert('Ralat: ' + (result.message || 'Gagal simpan'), 'error');
+      }
+    } catch(err) {
+      console.error("Fetch error:", err);
+      showAlert('Ralat rangkaian. Sila cuba lagi. Butiran: ' + err.message, 'error');
+    }
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
+    document.getElementById('confirmModal').style.display = 'none';
+  }
+  
+  // Events
+  kategori.addEventListener('change', () => {
+    if(kategori.value === 'Graduan Kembar') buildTwins();
+    else buildSingle();
+  });
+  buildSingle();
+  
+  document.getElementById('graduateForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if(!kategori.value) { showAlert('Pilih kategori','error'); kategori.classList.add('error-input'); return; }
+    kategori.classList.remove('error-input');
+    if(!validateKeperluan()) { showAlert('Ruangan Keperluan Khas wajib diisi','error'); return; }
+    let valid = false;
+    if(kategori.value === 'Graduan Kembar') valid = validateTwins();
+    else valid = validateSingle();
+    if(!valid) return;
+    showModal();
+  });
+  
+  document.getElementById('modalCancel').addEventListener('click', () => document.getElementById('confirmModal').style.display = 'none');
+  document.getElementById('modalConfirm').addEventListener('click', submitConfirmed);
+  window.addEventListener('click', (e) => { if(e.target === document.getElementById('confirmModal')) document.getElementById('confirmModal').style.display = 'none'; });
+</script>
+</body>
+</html>
